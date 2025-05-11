@@ -1,0 +1,54 @@
+services:
+  web:
+    build: ./services/web
+    container_name: web
+    volumes:
+      - ./services/web/public:/usr/share/nginx/html
+      - ./services/web/nginx.conf:/etc/nginx/nginx.conf
+      - ./services/web:/usr/share/nginx/html
+      - ./services/web:/app
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "80"
+    networks:
+      - api
+
+  api:
+    build: ./services/api
+    container_name: api
+    volumes:
+      - ./services/api:/app
+    working_dir: /app
+    command: npm run dev
+    environment:
+      - REDIS_HOST=redis
+    networks:
+      - web
+    depends_on:
+      - redis
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "${NGINX_PORT}:80"
+    volumes:
+      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+      - api
+    networks:
+      - web
+      - api
+
+  redis:
+    image: redis:latest
+    container_name: redis
+
+networks:
+  api:
+  web:
+
+volumes:
+  node_modules:
