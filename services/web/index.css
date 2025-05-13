@@ -1,6 +1,11 @@
+@import url("/src/styles/text.css");
+
 body {
-	font-size: 16px;
+  font-size: 16px;
+  margin: 0;
+  line-height: inherit;
 }
+
 nav {
-	padding: 0.5rem;
+  padding: 0.5rem;
 }
